@@ -10,7 +10,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotComm
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # কনফিগারেশন
-TOKEN = '8611297141:AAHhjaaegqta8y6KL_zESTrCov4mirvSmCw'
+T'
 app = Flask(__name__)
 ptb_app = Application.builder().token(TOKEN).build()
 
