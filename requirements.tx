@@ -1,0 +1,57 @@
+# main.py
+Repository
+python-telegram-bot
+flask
+httpx
+import os
+import asyncio
+from flask import Flask, request
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
+from telegram.ext import Application, CommandHandler, ContextTypes
+
+# কনফিগারেশন
+TOKEN = '8611297141:AAHhjaaegqta8y6KL_zESTrCov4mirvSmCw'
+app = Flask(__name__)
+ptb_app = Application.builder().token(TOKEN).build()
+
+# মেনু কমান্ড সেটআপ
+async def set_commands(application):
+    await application.bot.set_my_commands([
+        BotCommand("start", "🚀 শুরু করুন"),
+        BotCommand("website", "🌐 ওয়েবসাইট")
+    ])
+
+# ওয়েব হুক রুট
+@app.route('/' + TOKEN, methods=['POST'])
+async def webhook():
+    if request.method == "POST":
+        update = Update.de_json(request.get_json(force=True), ptb_app.bot)
+        async with ptb_app:
+            await ptb_app.process_update(update)
+        return "ok", 200
+
+@app.route('/')
+def index():
+    return "BCEF Server is Online!", 200
+
+# স্টার্ট কমান্ড
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [InlineKeyboardButton("📢 Join Telegram", url="https://t.me/BangladeshCyberExpertForce")],
+        [InlineKeyboardButton("📺 YouTube Channel", url="https://www.youtube.com/@Bangladesh_Cyber_Excited")],
+        [InlineKeyboardButton("🌐 Official Website", url="https://bcef-cyber.com")],
+        [InlineKeyboardButton("✅ Verify", callback_data="v")]
+    ]
+    await update.message.reply_text(
+        "🔥 **BCEF Professional Assistant**\n\nমোঃ মমিনুল ইসলাম, আপনার বটটি এখন সার্ভারে সফলভাবে চালু হয়েছে!", 
+        reply_markup=InlineKeyboardMarkup(keyboard), 
+        parse_mode='Markdown'
+    )
+
+ptb_app.add_handler(CommandHandler("start", start))
+
+if __name__ == "__main__":
+    # পোর্ট হ্যান্ডেল করা
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+    
